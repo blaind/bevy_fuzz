@@ -22,6 +22,13 @@ The fuzzing is smart in a sense, that it tries to find inputs that cover as much
 - bevy_window / CursorMoved
 - bevy_window / WindowResized
 
+### Warnings / Please note
+
+- The produced binary files are not (most probably) currently usable between Bevy versions
+- Only built-in `CoreStage`'s are run currently. Subapps (and render graph) are ignored
+- Public API (e.g. function & struct names) will most probably change in the future
+- This is still a "tech preview", and feasibility of UI fuzzing for actually finding bugs remains to be seen
+
 ## Quick start
 
 ### Running an integrated example
