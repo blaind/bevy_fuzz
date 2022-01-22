@@ -1,9 +1,7 @@
 #![no_main]
 use libfuzzer_sys::fuzz_target;
 
-use bevy_fuzz::FuzzInput;
-
-fuzz_target!(|data: Vec<FuzzInput>| {
-    println!("Fuzz iter input_len={}", data.len());
-    let app = bevy_fuzz::get_app(data);
+fuzz_target!(|data: &[u8]| {
+    let my_plugin = fuzzed_bevy_app::MyAppPlugin::default();
+    bevy_fuzz::fuzz_bootstrap(my_plugin, data);
 });

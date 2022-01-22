@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+mod bootstrap;
 mod data;
 mod fuzz_input;
 mod input;
@@ -8,11 +9,17 @@ mod output;
 mod runner;
 mod window;
 
+pub use bootstrap::fuzz_bootstrap;
 pub use output::{parse_commands, EventOutputPlugin};
 pub use runner::fuzz_runner;
 
 pub mod prelude {
-    pub use crate::{data::FuzzData, fuzz_input::FuzzInput, FuzzPlugin};
+    pub use crate::{
+        bootstrap::{bin_bootstrap, fuzz_bootstrap, FuzzTarget},
+        data::FuzzData,
+        fuzz_input::FuzzInput,
+        FuzzPlugin,
+    };
 }
 
 #[derive(Default)]

@@ -18,7 +18,7 @@ impl Plugin for EventOutputPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(EventOutput {
             buffer: vec![0u8; 1024 * 1024],
-            file: File::create("fuzz-recording.bin").unwrap(),
+            file: File::create("input-recording.bin").unwrap(),
         })
         .add_system(output_input_events_system);
     }

@@ -1,5 +1,5 @@
 [package]
-name = "bevy_fuzz-fuzz"
+name = "fuzzed_bevy_app-fuzz"
 version = "0.0.0"
 authors = ["Automatically generated"]
 publish = false
@@ -14,6 +14,7 @@ libfuzzer-sys = "0.4"
 
 [dependencies.fuzzed_bevy_app]
 path = ".."
+features = ["fuzz"]
 
 [dependencies.bevy_fuzz]
 path = "../../.."

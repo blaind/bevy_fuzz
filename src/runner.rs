@@ -95,15 +95,25 @@ fn feed_fuzz_events(app: &mut App) {
     let mut data = world.get_resource_mut::<FuzzData>().unwrap();
 
     // event senders
-    let mut mouse_button_input_events = world
-        .get_resource_mut::<Events<MouseButtonInput>>()
-        .unwrap();
-
-    let mut mouse_wheel_input_events = world.get_resource_mut::<Events<MouseWheel>>().unwrap();
-    let mut mouse_motion_events = world.get_resource_mut::<Events<MouseMotion>>().unwrap();
-    let mut keyboard_input_events = world.get_resource_mut::<Events<KeyboardInput>>().unwrap();
-    let mut cursor_moved_events = world.get_resource_mut::<Events<CursorMoved>>().unwrap();
-    let mut window_resized_events = world.get_resource_mut::<Events<WindowResized>>().unwrap();
+    let mut mouse_button_input_events =
+        world.get_resource_mut::<Events<MouseButtonInput>>().expect(
+            "Missing MouseButtonInput events (provided by bevy::input::InputPlugin) from the App",
+        );
+    let mut mouse_wheel_input_events = world
+        .get_resource_mut::<Events<MouseWheel>>()
+        .expect("Missing MouseWheel events (provided by bevy::input::InputPlugin) from the App");
+    let mut mouse_motion_events = world
+        .get_resource_mut::<Events<MouseMotion>>()
+        .expect("Missing MouseMotion events (provided by bevy::input::InputPlugin) from the App");
+    let mut keyboard_input_events = world
+        .get_resource_mut::<Events<KeyboardInput>>()
+        .expect("Missing KeyboardInput events (provided by bevy::input::InputPlugin) from the App");
+    let mut cursor_moved_events = world
+        .get_resource_mut::<Events<CursorMoved>>()
+        .expect("Missing CursorMoved events (provided by bevy::window::WindowPlugin) from the App");
+    let mut window_resized_events = world.get_resource_mut::<Events<WindowResized>>().expect(
+        "Missing WindowResized events (provided by bevy::window::WindowPlugin) from the App",
+    );
 
     // loop
     let mut break_at_idx = None;
