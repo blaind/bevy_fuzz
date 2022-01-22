@@ -17,17 +17,16 @@ Install the required tooling (`cargo-fuzz`)
 
     cargo install cargo-fuzz
 
-Clone repository and go to sample directory
+Clone the repository and go to sample directory
 
     git clone https://github.com/blaind/bevy_fuzz.git
     cd bevy_fuzz/examples/fuzzed_bevy_app
 
-Run the app in a input-recording mode. It will show a grey window, try pressing various keys,
-including key A. You should see the output of key A in the console.
+Run the app in a input-recording mode. It will show a grey window, try pressing various keys, including key A. You should see the output of key A in the console.
 
     cargo run --features fuzz -- record
 
-Copy the produced recording output to fuzzing corpus directory
+This will produce a file called `input-recording.bin`. Copy the file to fuzzing corpus directory:
 
     cp input-recording.bin fuzz/corpus/fuzz_target_1/
 
@@ -35,7 +34,7 @@ Run the fuzzer. For now, the `-s none` (sanitizer = none) is an important build 
 
     cargo fuzz run -s none fuzz_target_1 -- -detect_leaks=0 -rss_limit_mb=8192
 
-Eventually, this should crash as the fuzzer finds a keypress Z. The output should be similar to:
+Eventually, this should crash as the fuzzer finds a keypress Z (which intentionally panics). The output should be similar to:
 
     WARNING: Failed to find function "__sanitizer_acquire_crash_state".
     WARNING: Failed to find function "__sanitizer_print_stack_trace".
@@ -59,9 +58,7 @@ Eventually, this should crash as the fuzzer finds a keypress Z. The output shoul
     SUMMARY: libFuzzer: deadly signal
     MS: 0 ; base unit: 0000000000000000000000000000000000000000
 
-Output will also print the binary sequence that caused the crash.
-
-You can rerun the crashing artifact again either with
+Output will also print the binary sequence that caused the crash. You can rerun the crashing artifact again either with
 
 A. the provided main-wrapper (faster, preferred)
 
