@@ -24,10 +24,11 @@ The fuzzing is smart in a sense, that it tries to find inputs that cover as much
 
 ### Warnings / Please note
 
-- The produced binary files are not (most probably) currently usable between Bevy versions
+- The produced binary files are not currently compatible between various bevy_fuzz (and bevy) versions
 - Only built-in `CoreStage`'s are run currently. Subapps (and render graph) are ignored
 - Public API (e.g. function & struct names) will most probably change in the future
 - This is still a "tech preview", and feasibility of UI fuzzing for actually finding bugs remains to be seen
+- Currently tested only on Linux
 
 ## Quick start
 
@@ -46,7 +47,11 @@ Run the app in a input-recording mode. It will show a grey window, try pressing 
 
     cargo run --features fuzz -- record
 
-This will produce a file called `input-recording.bin`. Copy the file to fuzzing corpus directory:
+This will produce a file called `input-recording.bin`. Optional: you can view the recording by:
+
+    cargo run --features fuzz -- view input-recording.bin
+
+Copy the file to fuzzing corpus directory:
 
     mkdir -p fuzz/corpus/fuzz_target_1/
     cp input-recording.bin fuzz/corpus/fuzz_target_1/

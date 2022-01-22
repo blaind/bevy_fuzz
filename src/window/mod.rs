@@ -3,8 +3,14 @@ use serde::{Deserialize, Serialize};
 
 pub mod event;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, PartialEq)]
 pub struct WrapWindowId([u8; 16]);
+
+impl std::fmt::Debug for WrapWindowId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "WrapWindowId(primary)")
+    }
+}
 
 impl From<&WrapWindowId> for WindowId {
     fn from(inp: &WrapWindowId) -> Self {
