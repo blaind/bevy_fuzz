@@ -1,8 +1,16 @@
 [package]
 name = "bevy_fuzz"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+description = "Experimental high-performance fuzz-testing for bevy systems, emulating user UI interaction"
+repository = "https://github.com/blaind/bevy_fuzz"
+license = "MIT"
+readme = "README.md"
+keywords = ["bevy", "fuzzing", "testing"]
+categories = ["development-tools::testing"]
 
 [dependencies]
-bevy = { version = "0.6", default-features = false }
-arbitrary = { version = "1", features = ["derive"] }
+bevy = { version = "0.6", default-features = false, features = ["serialize"] }
+postcard = { version = "0.7.3", features = ["use-std", "alloc"] }
+postcard-cobs = "0.2.0"
+serde = { version = "1.0", features = ["derive"] }

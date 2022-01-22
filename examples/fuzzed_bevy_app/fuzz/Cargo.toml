@@ -12,8 +12,11 @@ cargo-fuzz = true
 [dependencies]
 libfuzzer-sys = "0.4"
 
-[dependencies.bevy_fuzz]
+[dependencies.fuzzed_bevy_app]
 path = ".."
+
+[dependencies.bevy_fuzz]
+path = "../../.."
 
 # Prevent this from interfering with workspaces
 [workspace]
