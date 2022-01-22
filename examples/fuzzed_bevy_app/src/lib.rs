@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_fuzz::prelude::*;
 
 /// This is your app logic
 #[derive(Default)]
@@ -12,7 +11,8 @@ impl Plugin for MyAppPlugin {
 }
 
 /// Implements app building for usage in fuzzing
-impl FuzzTarget for MyAppPlugin {
+#[cfg(feature = "fuzz")]
+impl bevy_fuzz::FuzzTarget for MyAppPlugin {
     /// Add plugins that are needed when running in a GUI mode
     /// (if you use the exact same set as below, no need to implement the fn, they're in trait)
     fn add_gui_plugins(&mut self, app: &mut App) {
@@ -46,5 +46,25 @@ fn keyboard_input_system(keyboard_input: Res<Input<KeyCode>>) {
 
     if keyboard_input.just_pressed(KeyCode::Z) {
         panic!("'Z' pressed - causes panic!");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_my_plugin() {
+        assert_eq!(Some(MyAppPlugin::default()).is_some(), true);
+    }
+
+    #[test]
+    #[cfg(feature = "fuzz")]
+    fn test_fuzz_plugin() {
+        use bevy_fuzz::FuzzTarget;
+        let mut app = App::new();
+        let mut my_app_plugin = MyAppPlugin::default();
+        my_app_plugin.add_headless_plugins(&mut app);
+        assert_eq!(Some(my_app_plugin).is_some(), true);
     }
 }

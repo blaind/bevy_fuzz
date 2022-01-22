@@ -11,14 +11,82 @@ Experimental high-performance fuzz-testing for bevy systems, emulating user UI i
 
 ## Quick start
 
-**Note! integration instructions coming soon**
+### Running an integrated example
 
-First, read https://rust-fuzz.github.io/book/introduction.html
-
-Then,
+Install the required tooling (`cargo-fuzz`)
 
     cargo install cargo-fuzz
-    cargo fuzz run fuzz_target_1
+
+Clone repository and go to sample directory
+
+    git clone https://github.com/blaind/bevy_fuzz.git
+    cd bevy_fuzz/examples/fuzzed_bevy_app
+
+Run the app in a input-recording mode. It will show a grey window, try pressing various keys,
+including key A. You should see the output of key A in the console.
+
+    cargo run --features fuzz -- record
+
+Copy the produced recording output to fuzzing corpus directory
+
+    cp input-recording.bin fuzz/corpus/fuzz_target_1/
+
+Run the fuzzer. For now, the `-s none` (sanitizer = none) is an important build toggle
+
+    cargo fuzz run -s none fuzz_target_1 -- -detect_leaks=0 -rss_limit_mb=8192
+
+Eventually, this should crash as the fuzzer finds a keypress Z. The output should be similar to:
+
+    WARNING: Failed to find function "__sanitizer_acquire_crash_state".
+    WARNING: Failed to find function "__sanitizer_print_stack_trace".
+    WARNING: Failed to find function "__sanitizer_set_death_callback".
+    INFO: Running with entropic power schedule (0xFF, 100).
+    INFO: Seed: 1184633377
+    INFO: Loaded 1 modules   (979081 inline 8-bit counters): 979081 [0x55a818b8d889, 0x55a818c7c912),
+    INFO: Loaded 1 PC tables (979081 PCs): 979081 [0x55a818c7c918,0x55a819b6d1a8),
+    INFO:      848 files found in bevy_fuzz/examples/fuzzed_bevy_app/fuzz/corpus/fuzz_target_1
+    INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+    INFO: seed corpus: files: 848 min: 32b max: 1346b total: 815506b rss: 68Mb
+    #256	pulse  cov: 3603 ft: 9014 corp: 216/89Kb exec/s: 128 rss: 74Mb
+    'A' currently pressed
+    'A' just pressed
+    (presses repeated)
+    thread '<unnamed>' panicked at ''Z' pressed - causes panic!', bevy_fuzz/examples/fuzzed_bevy_app/src/lib.rs:48:9
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    ==3696259== ERROR: libFuzzer: deadly signal
+    NOTE: libFuzzer has rudimentary signal handlers.
+        Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+    SUMMARY: libFuzzer: deadly signal
+    MS: 0 ; base unit: 0000000000000000000000000000000000000000
+
+Output will also print the binary sequence that caused the crash.
+
+You can rerun the crashing artifact again either with
+
+A. the provided main-wrapper (faster, preferred)
+
+    cargo run --features fuzz apply fuzz/artifacts/fuzz_target_1/crash-[filename]
+
+B. cargo fuzz (slower)
+
+    cargo fuzz run --sanitizer=none fuzz_target_1 fuzz/artifacts/fuzz_target_1/crash-[filename]
+
+**NOTE! If the above commands do not reproduce the crash, the run is not deterministic**. This is
+currently hard to debug, please file an issue. One cause can be that you have `.insert_resource`'s
+in your `Plugin` builder `fn build(&self, app: &mut App)`. These resources can not be reset
+for each run currently - you should move them to a startup system.
+
+Often it's also good to try to minimize the crash
+
+    cargo fuzz tmin --sanitizer=none fuzz_target_1 fuzz/artifacts/fuzz_target_1/crash-[filename]
+
+### Integrating to own app
+
+Instructions coming. For now, see the [examples/fuzzed_bevy_app](examples/fuzzed_bevy_app) example.
+
+## Other resources
+
+https://rust-fuzz.github.io/book/introduction.html
 
 ## License
 

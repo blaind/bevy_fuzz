@@ -9,7 +9,8 @@ mod output;
 mod runner;
 mod window;
 
-pub use bootstrap::fuzz_bootstrap;
+pub use bootstrap::FuzzTarget;
+pub use bootstrap::{bin_bootstrap, fuzz_bootstrap};
 pub use output::{parse_commands, EventOutputPlugin};
 pub use runner::fuzz_runner;
 
