@@ -7,7 +7,20 @@
 [docs version]: https://docs.rs/bevy_fuzz/badge.svg
 [docs]: https://docs.rs/bevy_fuzz
 
-Experimental high-performance fuzz-testing for bevy systems, emulating user UI interaction
+Experimental high-performance code coverage-based fuzz-testing for bevy systems, emulating user UI interaction. This plugin works by constructing and sending random input events to the application
+
+The purpose is to find combinations of user interactions that produce crashes. The package uses
+[cargo-fuzz](https://github.com/rust-fuzz/cargo-fuzz) as a Rust frontend, which itself uses
+[libFuzzer](https://llvm.org/docs/LibFuzzer.html) to run the fuzzing.
+
+The fuzzing is smart in a sense, that it tries to find inputs that cover as much code space as possible. Currently captured/fuzzed inputs:
+
+- bevy_input / mouse / MouseButtonInput
+- bevy_input / mouse / MouseWheel
+- bevy_input / mouse / MouseMotion
+- bevy_input / keyboard / KeyboardInput
+- bevy_window / CursorMoved
+- bevy_window / WindowResized
 
 ## Quick start
 
@@ -28,9 +41,10 @@ Run the app in a input-recording mode. It will show a grey window, try pressing 
 
 This will produce a file called `input-recording.bin`. Copy the file to fuzzing corpus directory:
 
+    mkdir -p fuzz/corpus/fuzz_target_1/
     cp input-recording.bin fuzz/corpus/fuzz_target_1/
 
-Run the fuzzer. For now, the `-s none` (sanitizer = none) is an important build toggle
+Run the fuzzer. For now, the `-s none` (sanitizer = none) is an important build toggle. This will recompile the app using LLVM instructions. The fuzzing -compilation is slower than standard compilation.
 
     cargo fuzz run -s none fuzz_target_1 -- -detect_leaks=0 -rss_limit_mb=8192
 
