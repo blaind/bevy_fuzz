@@ -10,7 +10,7 @@ keywords = ["bevy", "fuzzing", "testing"]
 categories = ["development-tools::testing"]
 
 [dependencies]
-bevy = { version = "0.6", default-features = false, features = ["serialize"] }
+bevy = { version = "0.8", default-features = false, features = ["serialize"] }
 postcard = { version = "0.7.3", features = ["use-std", "alloc"] }
 postcard-cobs = "0.2.0"
 serde = { version = "1.0", features = ["derive"] }
